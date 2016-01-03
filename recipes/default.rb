@@ -27,17 +27,27 @@ poise_service_user node['consul']['service_user'] do
   group node['consul']['service_group']
 end
 
+client = consul_client node['consul']['service_name'] do |r|
+  user node['consul']['service_user']
+  group node['consul']['service_group']
+
+  node['consul']['config'].each_pair { |k, v| r.send(k, v) }
+  notifies :restart, "consul_service[#{name}]", :delayed
+end
+
 config = consul_config node['consul']['service_name'] do |r|
   owner node['consul']['service_user']
   group node['consul']['service_group']
 
   node['consul']['config'].each_pair { |k, v| r.send(k, v) }
+  notifies :restart, "consul_service[#{name}]", :delayed
 end
+
 
 consul_service node['consul']['service_name'] do |r|
   user node['consul']['service_user']
   group node['consul']['service_group']
-  version node['consul']['version']
+  version client.version
   config_file config.path
 
   node['consul']['service'].each_pair { |k, v| r.send(k, v) }
