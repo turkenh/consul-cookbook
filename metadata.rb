@@ -14,7 +14,7 @@ supports 'ubuntu', '>= 12.04'
 supports 'arch'
 supports 'windows'
 
-depends 'chef-vault', '~> 1.3'
+depends 'chef-vault', '= 1.3.0'
 depends 'chocolatey'
 depends 'golang'
 depends 'firewall', '~> 2.0'
